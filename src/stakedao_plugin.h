@@ -26,24 +26,30 @@ typedef enum {
 #define PARTIAL_FILL 1
 
 typedef enum {
-    SEND_SCREEN,
-    RECEIVE_SCREEN,
-    BENEFICIARY_SCREEN,
-    PARTIAL_FILL_SCREEN,
+    DEPOSIT_SCREEN,
+    WITHDRAW_SCREEN,
     ERROR,
 } screens_t;
 
 // Would've loved to make this an enum but we don't have enough room because enums are `int` and not
 // `uint8_t`.
-#define AMOUNT_DEPOSITED 0  // Amount deposited by the user to the strategy.
-#define SHARE_RECEIVED 1  // Share sent by the strategy to the user.
-#define TOKEN_SENT      2  // Address of the token the user is sending.
-#define TOKEN_RECEIVED  3  // Address of the token sent to the user.
 
-#define NONE 4  // Placeholder variant to be set when parsing is done but data is still being sent.
+// Deposit Actions
+#define AMOUNT_DEPOSITED 0  // Amount deposited by the user to the strategy.
+#define SHARES_RECEIVED 1  // Share sent by the strategy to the user.
+
+// Withdraw Actions
+#define SHARES_BURNED 2 // shares to burn
+#define AMOUNT_WITHDRAWN 3 // amount withdrawn
+
+// Common Actions
+#define TOKEN_UNDER 4  // Address of the token the user is sending.
+#define TOKEN_SHARES 5  // Address of the token sent to the user.
+
+#define NONE 6  // Placeholder variant to be set when parsing is done but data is still being sent.
 
 // Number of decimals used when the token wasn't found in the CAL.
-//#define DEFAULT_DECIMAL WEI_TO_ETHER
+#define DEFAULT_DECIMAL WEI_TO_ETHER
 
 // Ticker used when the token wasn't found in the CAL.
 #define DEFAULT_TICKER ""
@@ -51,12 +57,12 @@ typedef enum {
 // Shared global memory with Ethereum app. Must be at most 5 * 32 bytes.
 typedef struct stake_dao_parameters_t {
     uint8_t amount_deposited[INT256_LENGTH];
-    uint8_t share_received[INT256_LENGTH];
+    uint8_t shares_received[INT256_LENGTH];
     uint8_t beneficiary[ADDRESS_LENGTH];
-    uint8_t contract_address_strategy[ADDRESS_LENGTH];
+    uint8_t contract_address_shares[ADDRESS_LENGTH];
     uint8_t contract_address_underlying[ADDRESS_LENGTH];
-    //char ticker_sent[MAX_TICKER_LEN];
-    //char ticker_received[MAX_TICKER_LEN];
+    char ticker_shares[MAX_TICKER_LEN];
+    char ticker_underlying[MAX_TICKER_LEN];
     
     // TODO (recalculate the final size)
 

@@ -60,10 +60,10 @@ static void handle_init_contract(void *parameters) {
         case DEPOSIT:
             // Skip caller, structure offset and data offset
             context->skip = 3;
-            context->next_param = TOKEN_SENT;
+            context->next_param = TOKEN_UNDER;
             break;
         case WITHDRAW:
-            context->next_param = TOKEN_SENT;
+            context->next_param = TOKEN_UNDER;
             break;
         default:
             PRINTF("Missing selectorIndex\n");
@@ -74,49 +74,40 @@ static void handle_init_contract(void *parameters) {
     msg->result = ETH_PLUGIN_RESULT_OK;
 }
 
-static void sent_token_eth(stake_dao    _parameters_t *context) {
+/*static void sent_token_eth(stake_dao_parameters_t *context) {
     context->decimals_sent = WEI_TO_ETHER;
     strlcpy(context->ticker_sent, "ETH", sizeof(context->ticker_sent));
     context->tokens_found |= TOKEN_SENT_FOUND;
-}
+}*/
 
-static void received_token_eth(stake_dao_parameters_t *context) {
+/*static void received_token_eth(stake_dao_parameters_t *context) {
     context->decimals_received = WEI_TO_ETHER;
-    strlcpy(context->ticker_received, "ETH", sizeof(context->ticker_received));
+    strlcpy(context->ticker_shares, "ETH", sizeof(context->ticker_received));
     context->tokens_found |= TOKEN_RECEIVED_FOUND;
-}
+}*/
 
 static void handle_finalize(void *parameters) {
     ethPluginFinalize_t *msg = (ethPluginFinalize_t *) parameters;
     stake_dao_parameters_t *context = (stake_dao_parameters_t *) msg->pluginContext;
     if (context->valid) {
         msg->numScreens = 1;
-        if (context->selectorIndex == SWAP) {
+        if (context->selectorIndex == DEPOSIT) {
             // An addiitonal screen is required to display the receive and beneficiary field.
             msg->numScreens += 2;
-            if (context->flags & PARTIAL_FILL) msg->numScreens += 1;
+            //if (context->flags & PARTIAL_FILL) msg->numScreens += 1;
         }
 
-        if (!ADDRESS_IS_ETH(context->contract_address_sent)) {
-            // Address is not ETH so we will need to look up the token in the CAL.
-            printf_hex_array("Setting address sent to: ",
-                             ADDRESS_LENGTH,
-                             context->contract_address_sent);
-            msg->tokenLookup1 = context->contract_address_sent;
-        } else {
-            sent_token_eth(context);
-            msg->tokenLookup1 = NULL;
-        }
-        if (!ADDRESS_IS_ETH(context->contract_address_received)) {
-            // Address is not ETH so we will need to look up the token in the CAL.
-            printf_hex_array("Setting address received to: ",
-                             ADDRESS_LENGTH,
-                             context->contract_address_received);
-            msg->tokenLookup2 = context->contract_address_received;
-        } else {
-            received_token_eth(context);
-            msg->tokenLookup2 = NULL;
-        }
+        // Address is not ETH so we will need to look up the token in the CAL.
+        printf_hex_array("Setting address sent to: ",
+                        ADDRESS_LENGTH,
+                        context->contract_address_underlying);
+        msg->tokenLookup1 = context->contract_address_underlying;
+
+        // Address is not ETH so we will need to look up the token in the CAL.
+        printf_hex_array("Setting address received to: ",
+                        ADDRESS_LENGTH,
+                        context->contract_address_shares);
+        msg->tokenLookup2 = context->contract_address_shares;
 
         msg->uiType = ETH_UI_TYPE_GENERIC;
         msg->result = ETH_PLUGIN_RESULT_OK;
@@ -131,32 +122,28 @@ static void handle_provide_token(void *parameters) {
     stake_dao_parameters_t *context = (stake_dao_parameters_t *) msg->pluginContext;
     PRINTF("StakeDAO plugin provide token: 0x%p, 0x%p\n", msg->token1, msg->token2);
 
-    if (ADDRESS_IS_ETH(context->contract_address_sent)) {
-        sent_token_eth(context);
-    } else if (msg->token1 != NULL) {
+    if (msg->token1 != NULL) {
         context->decimals_sent = msg->token1->decimals;
-        strlcpy(context->ticker_sent, (char *) msg->token1->ticker, sizeof(context->ticker_sent));
+        strlcpy(context->ticker_underlying, (char *) msg->token1->ticker, sizeof(context->ticker_underlying));
         context->tokens_found |= TOKEN_SENT_FOUND;
     } else {
         // CAL did not find the token and token is not ETH.
         context->decimals_sent = DEFAULT_DECIMAL;
-        strlcpy(context->ticker_sent, DEFAULT_TICKER, sizeof(context->ticker_sent));
+        strlcpy(context->ticker_underlying, DEFAULT_TICKER, sizeof(context->ticker_underlying));
         // // We will need an additional screen to display a warning message.
         // msg->additionalScreens++;
     }
 
-    if (ADDRESS_IS_ETH(context->contract_address_received)) {
-        received_token_eth(context);
-    } else if (msg->token2 != NULL) {
+    if (msg->token2 != NULL) {
         context->decimals_received = msg->token2->decimals;
-        strlcpy(context->ticker_received,
+        strlcpy(context->ticker_shares,
                 (char *) msg->token2->ticker,
-                sizeof(context->ticker_received));
+                sizeof(context->ticker_shares));
         context->tokens_found |= TOKEN_RECEIVED_FOUND;
     } else {
         // CAL did not find the token and token is not ETH.
         context->decimals_received = DEFAULT_DECIMAL;
-        strlcpy(context->ticker_received, DEFAULT_TICKER, sizeof(context->ticker_sent));
+        strlcpy(context->ticker_shares, DEFAULT_TICKER, sizeof(context->ticker_shares));
         // // We will need an additional screen to display a warning message.
         // msg->additionalScreens++;
     }

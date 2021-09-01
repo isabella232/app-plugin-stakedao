@@ -24,7 +24,7 @@
 
 #include "glyphs.h"
 
-#include "stake_dao_plugin.h"
+#include "stakedao_plugin.h"
 
 void call_app_ethereum() {
     unsigned int libcall_params[3];
@@ -54,7 +54,7 @@ __attribute__((section(".boot"))) int main(int arg0) {
                 unsigned int *args = (unsigned int *) arg0;
 
                 if (args[0] != ETH_PLUGIN_CHECK_PRESENCE) {
-                    one_inch_plugin_call(args[0], (void *) args[1]);
+                    stake_dao_plugin_call(args[0], (void *) args[1]);
                 }
                 os_lib_end();
             }

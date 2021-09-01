@@ -45,13 +45,13 @@ static void set_deposit_ui(ethQueryContractUI_t *msg, stake_dao_parameters_t *co
         return;
     }
 
-    adjustDecimals((char *) context->amount_sent,
-                   strnlen((char *) context->amount_sent, sizeof(context->amount_sent)),
+    adjustDecimals((char *) context->amount_deposited,
+                   strnlen((char *) context->amount_deposited, sizeof(context->amount_deposited)),
                    msg->msg,
                    msg->msgLength,
                    context->decimals_sent);
 
-    prepend_ticker(msg->msg, msg->msgLength, context->ticker_sent);
+    prepend_ticker(msg->msg, msg->msgLength, context->ticker_underlying);
 }
 
 // Set UI for "Receive" screen.
@@ -71,28 +71,13 @@ static void set_shares_ui(ethQueryContractUI_t *msg, stake_dao_parameters_t *con
         return;
     }
 
-    adjustDecimals((char *) context->amount_received,
-                   strnlen((char *) context->amount_received, sizeof(context->amount_received)),
+    adjustDecimals((char *) context->shares_received,
+                   strnlen((char *) context->shares_received, sizeof(context->shares_received)),
                    msg->msg,
                    msg->msgLength,
                    context->decimals_received);
 
-    prepend_ticker(msg->msg, msg->msgLength, context->ticker_received);
-}
-
-// Set UI for "Beneficiary" screen.
-static void set_beneficiary_ui(ethQueryContractUI_t *msg, stake_dao_parameters_t *context) {
-    strlcpy(msg->title, "Beneficiary", msg->titleLength);
-
-    msg->msg[0] = '0';
-    msg->msg[1] = 'x';
-
-    chain_config_t chainConfig = {0};
-
-    getEthAddressStringFromBinary((uint8_t *) context->beneficiary,
-                                  (uint8_t *) msg->msg + 2,
-                                  msg->pluginSharedRW->sha3,
-                                  &chainConfig);
+    prepend_ticker(msg->msg, msg->msgLength, context->ticker_shares);
 }
 
 // Helper function that returns the enum corresponding to the screen that should be displayed.
@@ -102,9 +87,7 @@ static screens_t get_screen(ethQueryContractUI_t *msg, stake_dao_parameters_t *c
     if (index == 0) {
         return DEPOSIT_SCREEN;
     } else if (index == 1) {
-        return SHARES_SCREEN;
-    } else if (index == 2) {
-        return BENEFICIARY_SCREEN;
+        return WITHDRAW_SCREEN;
     }
 
     return ERROR;
@@ -123,11 +106,8 @@ void handle_query_contract_ui(void *parameters) {
         case DEPOSIT_SCREEN:
             set_deposit_ui(msg, context);
             break;
-        case SHARES_SCREEN:
+        case WITHDRAW_SCREEN:
             set_shares_ui(msg, context);
-            break;
-        case BENEFICIARY_SCREEN:
-            set_beneficiary_ui(msg, context);
             break;
         default:
             PRINTF("Received an invalid screenIndex\n");
