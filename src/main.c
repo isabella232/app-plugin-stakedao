@@ -15,16 +15,55 @@
  *  limitations under the License.
  ********************************************************************************/
 
-#include <stdbool.h>
-#include <stdint.h>
-#include <string.h>
-
 #include "os.h"
-#include "cx.h"
-
-#include "glyphs.h"
-
 #include "stakedao_plugin.h"
+
+// Vault contract
+// function deposit(uint256 amount)
+static const uint8_t STAKEDAO_DEPOSIT_SELECTOR[SELECTOR_SIZE] = {0x19, 0x90, 0x3e, 0xab};
+// function withdraw(uint256 share)
+static const uint8_t STAKEDAO_WITHDRAW_SELECTOR[SELECTOR_SIZE] = {0x19, 0x90, 0x3e, 0xab};
+
+// wstETH contract
+// function wrap(uint256 _stETHAmount) returns (uint256)
+//static const uint8_t LIDO_WRAP_STETH_SELECTOR[SELECTOR_SIZE] = {0xea, 0x59, 0x8c, 0xb0};
+// function unwrap(uint256 _wstETHAmount) returns (uint256)
+//static const uint8_t LIDO_UNWRAP_WSTETH_SELECTOR[SELECTOR_SIZE] = {0xde, 0x0e, 0x9a, 0x3e};
+
+// Array of all the different lido selectors.
+const uint8_t *const STAKEDAO_SELECTORS[NUM_STAKEDAO_SELECTORS] = {
+    STAKEDAO_DEPOSIT_SELECTOR,
+    STAKEDAO_WITHDRAW_SELECTOR
+    //LIDO_UNWRAP_WSTETH_SELECTOR,
+};
+
+void dispatch_plugin_calls(int message, void *parameters) {
+    switch (message) {
+        case ETH_PLUGIN_INIT_CONTRACT:
+            handle_init_contract(parameters);
+            break;
+        case ETH_PLUGIN_PROVIDE_PARAMETER:
+            handle_provide_parameter(parameters);
+            break;
+        case ETH_PLUGIN_FINALIZE:
+            handle_finalize(parameters);
+            break;
+        case ETH_PLUGIN_PROVIDE_TOKEN:
+            handle_provide_token(parameters);
+            break;
+        case ETH_PLUGIN_QUERY_CONTRACT_ID:
+            handle_query_contract_id(parameters);
+            break;
+        case ETH_PLUGIN_QUERY_CONTRACT_UI:
+            handle_query_contract_ui(parameters);
+            break;
+        default:
+            PRINTF("Unhandled message %d\n", message);
+            break;
+    }
+}
+
+#define RUN_APPLICATION 1
 
 void call_app_ethereum() {
     unsigned int libcall_params[3];
@@ -54,7 +93,7 @@ __attribute__((section(".boot"))) int main(int arg0) {
                 unsigned int *args = (unsigned int *) arg0;
 
                 if (args[0] != ETH_PLUGIN_CHECK_PRESENCE) {
-                    stake_dao_plugin_call(args[0], (void *) args[1]);
+                    dispatch_plugin_calls(args[0], (void *) args[1]);
                 }
                 os_lib_end();
             }
