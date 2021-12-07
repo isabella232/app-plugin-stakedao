@@ -1,58 +1,50 @@
 #include "stakedao_plugin.h"
 
-// Store the amount sent in the form of a string, without any ticker or
-// decimals. These will be added right before display.
-static void handle_amount_sent(ethPluginProvideParameter_t *msg, stakedao_parameters_t *context) {
-    memset(context->amount_sent, 0, sizeof(context->amount_sent));
-    memcpy(context->amount_sent, msg->parameter, PARAMETER_LENGTH);
-    context->amount_length = PARAMETER_LENGTH;
+static void copy_amount(uint8_t *dst, size_t dst_len, uint8_t *src) {
+    size_t len = MIN(dst_len, PARAMETER_LENGTH);
+    memcpy(dst, src, len);
 }
 
-/*static void handle_submit(ethPluginProvideParameter_t *msg, lido_parameters_t *context) {
-    // ABI for submit is: submit(address referral)
-    if (context->next_param == REFERRAL) {
-        // Should be done parsing
-        context->next_param = NONE;
-    } else {
-        PRINTF("Param not supported\n");
-        msg->result = ETH_PLUGIN_RESULT_ERROR;
-    }
-}*/
-
-// Similar to handle_amount_sent but takes the amount from the transaction data (in ETH).
-static void copy_eth_amount(ethPluginProvideParameter_t *msg, stakedao_parameters_t *context) {
-    memset(context->amount_sent, 0, sizeof(context->amount_sent));
-    memcpy(context->amount_sent,
-           &msg->pluginSharedRO->txContent->value.value,
-           msg->pluginSharedRO->txContent->value.length);
-    context->amount_length = msg->pluginSharedRO->txContent->value.length;
-}
-
-/*static void handle_wrap(ethPluginProvideParameter_t *msg, lido_parameters_t *context) {
-    // ABI for wrap is: wrap(uint256 amount)
-    // ABI for unwrap is: unwrap(uint256 amount)
+static void handle_deposit_all(ethPluginProvideParameter_t *msg, stakedao_parameters_t *context) {
     switch (context->next_param) {
-        case AMOUNT_SENT:
-            handle_amount_sent(msg, context);
-            // Should be done parsing
-            context->next_param = NONE;
+        // no params
+        default:
+            PRINTF("Param not supported: %d\n", context->next_param);
+            msg->result = ETH_PLUGIN_RESULT_ERROR;
+            break;
+    }
+}
+
+static void handle_premium(ethPluginProvideParameter_t *msg, stakedao_parameters_t *context) {
+    switch (context->next_param) {
+        // no params
+        default:
+            PRINTF("Param not supported: %d\n", context->next_param);
+            msg->result = ETH_PLUGIN_RESULT_ERROR;
+            break;
+    }
+}
+
+static void handle_vault(ethPluginProvideParameter_t *msg, stakedao_parameters_t *context) {
+    switch (context->next_param) {
+        case AMOUNT:
+            copy_amount(context->amount, sizeof(context->amount), msg->parameter);
             break;
         default:
             PRINTF("Param not supported\n");
             msg->result = ETH_PLUGIN_RESULT_ERROR;
             break;
     }
-}*/
+}
 
-static void handle_deposit(ethPluginProvideParameter_t *msg, stakedao_parameters_t *context) {
-    // ABI for wrap is: wrap(uint256 amount)
-    // ABI for unwrap is: unwrap(uint256 amount)
-    // ABI from deposit is: deposit(uint256 amount)
+static void handle_lp(ethPluginProvideParameter_t *msg, stakedao_parameters_t *context) {
     switch (context->next_param) {
-        case AMOUNT_SENT:
-            handle_amount_sent(msg, context);
-            // Should be done parsing
-            context->next_param = NONE;
+        case PID:
+            copy_amount(context->pid, sizeof(context->pid), msg->parameter);
+            context->next_param = AMOUNT;
+            break;
+        case AMOUNT:
+            copy_amount(context->amount, sizeof(context->amount), msg->parameter);
             break;
         default:
             PRINTF("Param not supported\n");
@@ -72,13 +64,29 @@ void handle_provide_parameter(void *parameters) {
     msg->result = ETH_PLUGIN_RESULT_OK;
 
     switch (context->selectorIndex) {
-        //case SUBMIT:
-            //handle_submit(msg, context);
-            //copy_eth_amount(msg, context);
-            //break;
-        case DEPOSIT:
-        case WITHDRAW:
-            handle_deposit(msg, context);
+        case VAULT_DEPOSIT_ALL:
+            handle_deposit_all(msg, context);
+        case PREMIUM_GETREWARD:
+        case PREMIUM_EXIT:
+            handle_premium(msg, context);
+        case LP_DEPOSIT:
+        case LP_WITHDRAW:
+            handle_lp(msg, context);
+        case VAULT_DEPOSIT:
+        case VAULT_WITHDRAW:
+        case OPT_DEPOSIT_ETH:
+        case OPT_WITHDRAW_ETH:
+        case OPT_DEPOSIT_UNDERLYING:
+        case OPT_WITHDRAW_UNDERLYING:
+        case OPT_DEPOSIT_CRVLP:
+        case OPT_WITHDRAW_CRVLP:
+        case PREMIUM_STAKE:
+        case PREMIUM_WITHDRAW:
+        case SANCTUARY_ENTER:
+        case SANCTUARY_LEAVE:
+        case PALACE_STAKE:
+        case PALACE_WITHDRAW:
+            handle_vault(msg, context);
             break;
         default:
             PRINTF("Selector Index %d not supported\n", context->selectorIndex);

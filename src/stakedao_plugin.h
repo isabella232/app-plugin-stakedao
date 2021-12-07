@@ -4,48 +4,71 @@
 #include <stdbool.h>
 
 #define PARAMETER_LENGTH 32
-#define SELECTOR_SIZE    4
-
-#define NUM_STAKEDAO_SELECTORS 2
+#define SELECTOR_SIZE 4
+#define MAX_STRATEGY_TICKER_LEN 16
+#define NUM_STAKEDAO_SELECTORS 19
 
 #define PLUGIN_NAME "StakeDAO"
 
-//#define STETH_TICKER   "stETH "
-//#define STETH_DECIMALS WEI_TO_ETHER
-
-//#define WSTETH_TICKER   "wstETH "
-//#define WSTETH_DECIMALS WEI_TO_ETHER
-
+// Enumeration of the different selectors possible.
+// Should follow the exact same order as the array declared in main.c
 typedef enum {
-    DEPOSIT,
-    WITHDRAW,
+    VAULT_DEPOSIT,
+    VAULT_WITHDRAW,
+    VAULT_DEPOSIT_ALL,
+    OPT_DEPOSIT_ETH,
+    OPT_WITHDRAW_ETH,
+    OPT_DEPOSIT_UNDERLYING,
+    OPT_DEPOSIT_CRVLP,
+    OPT_WITHDRAW_UNDERLYING,
+    OPT_WITHDRAW_CRVLP,
+    PREMIUM_STAKE,
+    PREMIUM_WITHDRAW,
+    PREMIUM_GETREWARD,
+    PREMIUM_EXIT,
+    LP_DEPOSIT,
+    LP_WITHDRAW,
+    SANCTUARY_ENTER,
+    SANCTUARY_LEAVE,
+    PALACE_STAKE,
+    PALACE_WITHDRAW
 } stakedaoSelector_t;
 
 typedef enum {
-    AMOUNT_SENT,
-    //REFERRAL,
-    NONE,
+    AMOUNT,
+    TOKEN,
+    VAULT,
+    PID
 } selectorField;
 
 extern const uint8_t *const STAKEDAO_SELECTORS[NUM_STAKEDAO_SELECTORS];
 
-// Number of decimals used when the token wasn't found in the CAL.
-#define DEFAULT_DECIMAL WEI_TO_ETHER
+typedef struct stakedaoStrategy_t {
+    uint8_t address[ADDRESS_LENGTH];
+    char strategy[MAX_STRATEGY_TICKER_LEN];
+    char want[MAX_STRATEGY_TICKER_LEN];
+    char vault[MAX_STRATEGY_TICKER_LEN];
+    uint8_t decimals;
+} stakedaoStrategy_t;
 
-// Ticker used when the token wasn't found in the CAL.
-#define DEFAULT_TICKER ""
-
-#define MAXIMUM_STR_SIZE_OF_INT256 80
+#define NUM_STAKEDAO_STRATEGIES 10
+extern stakedaoStrategy_t const STAKEDAO_STRATEGIES[NUM_STAKEDAO_STRATEGIES];
 
 // Shared global memory with Ethereum app. Must be at most 5 * 32 bytes.
 typedef struct stakedao_parameters_t {
-    uint8_t amount_sent[INT256_LENGTH];  // This could be reduced down to 20 bytes if conversion to
-                                         // string was done in ETH_QUERY_CONTRAT_UI in
-                                         // ETH_QUERY_CONTRAT_UI
-    uint8_t amount_length;
+    uint8_t amount[INT256_LENGTH];
+    uint8_t address[ADDRESS_LENGTH];
+    //uint8_t extra_address[ADDRESS_LENGTH];
+    char strategy[MAX_STRATEGY_TICKER_LEN];
+    char want[MAX_STRATEGY_TICKER_LEN];
+    char vault[MAX_STRATEGY_TICKER_LEN];
+    // 32 + 20 + 20  + 32 + 12 == 96
+    // 32 * 5 == 160 - 96 = 64 bytes left
+    uint8_t pid;
+    uint8_t decimals;
     uint8_t next_param;
-    uint8_t selectorIndex;
-    bool valid;
+    stakedaoSelector_t selectorIndex;
+    // 5 bytes. 64 - 5 == 59 bytes left 
 } stakedao_parameters_t;
 
 _Static_assert(sizeof(stakedao_parameters_t) <= 5 * 32, "Structure of parameters too big.");
@@ -54,5 +77,4 @@ void handle_provide_parameter(void *parameters);
 void handle_query_contract_ui(void *parameters);
 void handle_init_contract(void *parameters);
 void handle_finalize(void *parameters);
-void handle_provide_token(void *parameters);
 void handle_query_contract_id(void *parameters);
