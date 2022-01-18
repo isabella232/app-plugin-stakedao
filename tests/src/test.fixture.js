@@ -27,7 +27,7 @@ const NANOX_PLUGIN_PATH = Resolve('elfs/plugin_nanox.elf');
 const NANOS_PLUGIN = { "StakeDAO": NANOS_PLUGIN_PATH };
 const NANOX_PLUGIN = { "StakeDAO": NANOX_PLUGIN_PATH };
 
-const boilerplateJSON = generate_plugin_config();
+const stakedaoJSON = generate_plugin_config();
 
 const SPECULOS_ADDRESS = '0xFE984369CE3919AA7BB4F431082D027B4F8ED70C';
 const RANDOM_ADDRESS = '0xaaaabbbbccccddddeeeeffffgggghhhhiiiijjjj'
@@ -97,9 +97,9 @@ function zemu(device, func) {
             await sim.start(sim_options);
             const transport = await sim.getTransport();
             const eth = new Eth(transport);
-            eth.setPluginsLoadConfig({
+            eth.setLoadConfig({
                 baseURL: null,
-                extraPlugins: boilerplateJSON,
+                extraPlugins: stakedaoJSON,
             });
             await func(sim, eth);
         } finally {

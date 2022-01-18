@@ -22,7 +22,7 @@ function assert(condition, message) {
 
 // Function to generate the plugin configuration.
 function generate_plugin_config() {
-	
+	console.log("generate")
 	var fs = require('fs');
 	var files = fs.readdirSync(`${pluginFolder}/abis/`);
 	
@@ -67,7 +67,7 @@ function generate_plugin_config() {
 
 
 			// Put them in `methods_info`
-			//methods_info[selector] = {"erc20OfInterest": values["erc20OfInterest"], "plugin": pluginName, "serialized_data": serializedData, "signature": signature};
+			methods_info[selector] = {"plugin": pluginName, "serialized_data": serializedData, "signature": signature};
 		}
 		// Add the abi to methods_info
 		methods_info["abi"] = contracts_to_abis[contractAddress];

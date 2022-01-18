@@ -37,12 +37,28 @@ static void handle_vault(ethPluginProvideParameter_t *msg, stakedao_parameters_t
     }
 }
 
+static void handle_opt_withdraw_eth(ethPluginProvideParameter_t *msg, stakedao_parameters_t *context) {
+    switch (context->next_param) {
+        case AMOUNT:
+            copy_amount(context->amount, sizeof(context->amount), msg->parameter);
+            break;
+            context->next_param = MIN_AMOUNT;
+        case MIN_AMOUNT:
+            copy_amount(context->min_amount, sizeof(context->min_amount), msg->parameter);
+            break;
+        default:
+            PRINTF("Param not supported\n");
+            msg->result = ETH_PLUGIN_RESULT_ERROR;
+            break;
+    }
+}
+
 static void handle_lp(ethPluginProvideParameter_t *msg, stakedao_parameters_t *context) {
     switch (context->next_param) {
-        case PID:
-            copy_amount(context->pid, sizeof(context->pid), msg->parameter);
-            context->next_param = AMOUNT;
-            break;
+        // case PID:
+        //     copy_amount(context->pid, sizeof(context->pid), msg->parameter);
+        //     context->next_param = AMOUNT;
+        //     break;
         case AMOUNT:
             copy_amount(context->amount, sizeof(context->amount), msg->parameter);
             break;
@@ -66,16 +82,21 @@ void handle_provide_parameter(void *parameters) {
     switch (context->selectorIndex) {
         case VAULT_DEPOSIT_ALL:
             handle_deposit_all(msg, context);
+            break;
         case PREMIUM_GETREWARD:
         case PREMIUM_EXIT:
             handle_premium(msg, context);
+            break;
         case LP_DEPOSIT:
         case LP_WITHDRAW:
             handle_lp(msg, context);
+            break;
+        case OPT_WITHDRAW_ETH:
+            handle_opt_withdraw_eth(msg, context);
+            break;
         case VAULT_DEPOSIT:
         case VAULT_WITHDRAW:
         case OPT_DEPOSIT_ETH:
-        case OPT_WITHDRAW_ETH:
         case OPT_DEPOSIT_UNDERLYING:
         case OPT_WITHDRAW_UNDERLYING:
         case OPT_DEPOSIT_CRVLP:
