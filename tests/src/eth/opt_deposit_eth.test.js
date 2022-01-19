@@ -1,17 +1,18 @@
 import "core-js/stable";
 import "regenerator-runtime/runtime";
-import { waitForAppScreen, zemu, genericTx } from './test.fixture';
+import { waitForAppScreen, zemu, genericTx } from '../test.fixture';
 import { ethers } from "ethers";
 
-// StakeDAO BTC Call option 
-const contractAddr = "0x227e4635c5fe22d1e36dab1c921b62f8acc451b9";
-const LP_AMOUNT = '100000000000'; // 0
+// StakeDAO ETH Call option 
+const NETWORK = "ethereum";
+const contractAddr = "0x9b8f14554f40705de7908879e2228d2ac94fde1a";
+const MIN_ECRV = '0'; // 0 
 const BASE_SCREENS_S = 9; //STAKEDAO + AMOUNT + GAS_FEES + VAULT + APPROVE
 const BASE_SCREENS_X = (1 + 1 + 1 + 1 + 1); //STAKEDAO + AMOUNT + GAS_FEES + VAULT + APPROVE
 
-test('[Nano S] Deposit Crv LP into the option strategy', zemu("nanos", async (sim, eth) => {
-  const contract = new ethers.Contract(contractAddr, ['function depositCrvLP(uint256)']);
-  const {data} = await contract.populateTransaction.depositCrvLP(LP_AMOUNT);
+test('[Nano S] Deposit eth into vault', zemu("nanos", async (sim, eth) => {
+  const contract = new ethers.Contract(contractAddr, ['function depositETH(uint256)']);
+  const {data} = await contract.populateTransaction.depositETH(MIN_ECRV);
   let unsignedTx = genericTx;
   unsignedTx.to = contractAddr;
   unsignedTx.data = data;
@@ -20,14 +21,13 @@ test('[Nano S] Deposit Crv LP into the option strategy', zemu("nanos", async (si
   const tx = eth.signTransaction("44'/60'/0'/0", serializedTx);
 
   await waitForAppScreen(sim);
-  await sim.navigateAndCompareSnapshots('.', 'nanos_opt_deposit_crvlp', [BASE_SCREENS_S, 0]);
+  await sim.navigateAndCompareSnapshots('.', 'nanos_opt_deposit_eth', [BASE_SCREENS_S, 0]);
   await tx;
-}));
+}, NETWORK));
 
 // test('[Nano X] Deposit eth into vault', zemu("nanox", async (sim, eth) => {
 //   const contract = new ethers.Contract(contractAddr, ['function depositETH(uint256)']);
-//   const {data} = await contract.populateTransaction.depositETH(AMOUNT_TO_DEPOSIT);
-
+//   const {data} = await contract.populateTransaction.depositETH(MIN_ECRV);
 //   let unsignedTx = genericTx;
 //   unsignedTx.to = contractAddr;
 //   unsignedTx.data = data;
@@ -38,4 +38,4 @@ test('[Nano S] Deposit Crv LP into the option strategy', zemu("nanos", async (si
 //   await waitForAppScreen(sim);
 //   await sim.navigateAndCompareSnapshots('.', 'nanox_opt_deposit_eth', [BASE_SCREENS_X, 0]);
 //   await tx;
-// }));
+// }, NETWORK));
