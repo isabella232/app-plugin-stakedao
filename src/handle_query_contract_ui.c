@@ -26,9 +26,19 @@ static void set_strategy_name(ethQueryContractUI_t *msg, stakedao_parameters_t *
     strlcpy(msg->msg, context->strategy, msg->msgLength);
 }
 
+static void set_masterchef_name(ethQueryContractUI_t *msg, stakedao_parameters_t *context) {
+    strlcpy(msg->title, "LP Farming PID", msg->titleLength);
+    strlcpy(msg->msg, context->pid, msg->msgLength);
+}
+
 static void set_want_name(ethQueryContractUI_t *msg, stakedao_parameters_t *context) {
     strlcpy(msg->title, "Want", msg->titleLength);
     strlcpy(msg->msg, context->want, msg->msgLength);
+}
+
+static void set_masterchef_want_name(ethQueryContractUI_t *msg) {
+    strlcpy(msg->title, "Want", msg->titleLength);
+    strlcpy(msg->msg, "LP", msg->msgLength);
 }
 
 static void set_want_name_opt_eth_withdraw(ethQueryContractUI_t *msg, stakedao_parameters_t *context) {
@@ -116,10 +126,22 @@ void handle_query_contract_ui_vaults(ethQueryContractUI_t *msg, stakedao_paramet
     }
     switch (msg->screenIndex) {
         case 0:
-            set_strategy_name(msg, context);
+            switch (context->selectorIndex) {
+                case LP_DEPOSIT:
+                case LP_WITHDRAW:
+                    set_masterchef_name(msg, context);
+                    break;
+                default:
+                    set_strategy_name(msg, context);
+                    break;
+            }
             break;
         case 1:
             switch (context->selectorIndex) {
+                case LP_DEPOSIT:
+                case LP_WITHDRAW:
+                    set_masterchef_want_name(msg);
+                    break;
                 case OPT_WITHDRAW_ETH:
                     set_want_name_opt_eth_withdraw(msg, context);
                     break;

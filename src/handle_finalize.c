@@ -14,12 +14,12 @@
 // PREMIUM_WITHDRAW -> strategy + token + amount (SDT)
 // PREMIUM_GETREWARD -> strategy + token (WAVAX)
 // PREMIUM_EXIT -> strategy
-// LP_DEPOSIT -> strategy + pid/token + amount
+// LP_DEPOSIT -> strategy + pid/token + amount + addr
 // LP_WITHDRAW -> strategy + pid/token + amount
-// SANCTUARY_ENTER -> strategy + token + amount (SDT)
-// SANCTUARY_LEAVE -> strategy + token + amount (xSDT)
-// PALACE_STAKE -> strategy + token + amount (xSDT)
-// PALACE_WITHDRAW -> strategy + token + amount (xSDT)
+// SANCTUARY_ENTER -> strategy + token + amount (SDT) + addr
+// SANCTUARY_LEAVE -> strategy + token + amount (xSDT) + addr
+// PALACE_STAKE -> strategy + token + amount (xSDT) + addr
+// PALACE_WITHDRAW -> strategy + token + amount (xSDT) + addr
 
 void handle_finalize(void *parameters) {
     ethPluginFinalize_t *msg = (ethPluginFinalize_t *) parameters;

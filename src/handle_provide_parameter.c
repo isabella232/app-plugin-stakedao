@@ -53,12 +53,29 @@ static void handle_opt_min_amount(ethPluginProvideParameter_t *msg, stakedao_par
     }
 }
 
+static void handle_premium_stake(ethPluginProvideParameter_t *msg, stakedao_parameters_t *context) {
+    switch (context->next_param) {
+        case AMOUNT:
+            copy_amount(context->amount, sizeof(context->amount), msg->parameter);
+            context->next_param = NFT_ID;
+            break;
+        case NFT_ID:
+            memcpy(context->pid, msg->parameter, MAX_STRATEGY_TICKER_LEN);
+            break;
+        default:
+            PRINTF("Param not supported\n");
+            msg->result = ETH_PLUGIN_RESULT_ERROR;
+            break;
+    }
+}
+
 static void handle_lp(ethPluginProvideParameter_t *msg, stakedao_parameters_t *context) {
     switch (context->next_param) {
-        // case PID:
-        //     copy_amount(context->pid, sizeof(context->pid), msg->parameter);
-        //     context->next_param = AMOUNT;
-        //     break;
+        case PID:
+            //copy_amount(context->pid, sizeof(context->pid), msg->parameter);
+            memcpy(context->pid, msg->parameter, MAX_STRATEGY_TICKER_LEN);
+            context->next_param = AMOUNT;
+            break;
         case AMOUNT:
             copy_amount(context->amount, sizeof(context->amount), msg->parameter);
             break;
@@ -96,12 +113,14 @@ void handle_provide_parameter(void *parameters) {
         case OPT_WITHDRAW_UNDERLYING:
             handle_opt_min_amount(msg, context);
             break;
+        case PREMIUM_STAKE:
+            handle_premium_stake(msg, context);
+            break;
         case VAULT_DEPOSIT:
         case VAULT_WITHDRAW:
         case OPT_DEPOSIT_ETH:
         case OPT_DEPOSIT_CRVLP:
         case OPT_WITHDRAW_CRVLP:
-        case PREMIUM_STAKE:
         case PREMIUM_WITHDRAW:
         case SANCTUARY_ENTER:
         case SANCTUARY_LEAVE:

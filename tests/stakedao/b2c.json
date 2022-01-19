@@ -57,6 +57,42 @@
 	        }
         },
         {
+            "address": "0xfea5e213bbd81a8a94d0e1edb09dbd7ceab61e1c",
+            "contractName": "Masterchef",
+            "selectors": {
+                "0xe2bbb158": {
+                    "method": "deposit",
+                    "plugin": "StakeDAO"
+		        },
+                "0x441a3e70": {
+                    "method": "withdraw",
+                    "plugin": "StakeDAO"
+		        }
+	        }
+        },
+        {
+            "address": "0x20d1b558ef44a6e23d9bf4bf8db1653626e642c3",
+            "contractName": "Premium",
+            "selectors": {
+                "0x7b0472f0": {
+                    "method": "stake",
+                    "plugin": "StakeDAO"
+		        },
+                "0x2e1a7d4d": {
+                    "method": "withdraw",
+                    "plugin": "StakeDAO"
+		        },
+                "0x3d18b912": {
+                    "method": "getReward",
+                    "plugin": "StakeDAO"
+		        },
+                "0xe9fad8ee": {
+                    "method": "exit",
+                    "plugin": "StakeDAO"
+		        }
+	        }
+        },
+        {
             "address": "0xac14864ce5a98af3248ffbf549441b04421247d3",
             "contractName": "Sanctuary",
             "selectors": {

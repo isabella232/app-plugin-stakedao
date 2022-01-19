@@ -7,7 +7,7 @@
 #define SELECTOR_SIZE 4
 #define MAX_STRATEGY_TICKER_LEN 16
 #define NUM_STAKEDAO_SELECTORS 19
-#define NUM_STAKEDAO_STRATEGIES 11
+#define NUM_STAKEDAO_STRATEGIES 12
 
 #define PLUGIN_NAME "StakeDAO"
 
@@ -40,7 +40,8 @@ typedef enum {
     TOKEN,
     VAULT,
     PID,
-    MIN_AMOUNT
+    MIN_AMOUNT,
+    NFT_ID
 } selectorField;
 
 extern const uint8_t *const STAKEDAO_SELECTORS[NUM_STAKEDAO_SELECTORS];
@@ -63,13 +64,10 @@ typedef struct stakedao_parameters_t {
     char strategy[MAX_STRATEGY_TICKER_LEN];
     char want[MAX_STRATEGY_TICKER_LEN];
     char vault[MAX_STRATEGY_TICKER_LEN];
-    // 32 + 20 + 20  + 32 + 12 == 96
-    // 32 * 5 == 160 - 96 = 64 bytes left
-    //uint8_t pid;
+    char pid[MAX_STRATEGY_TICKER_LEN];
     uint8_t decimals;
     uint8_t next_param;
     stakedaoSelector_t selectorIndex;
-    // 5 bytes. 64 - 5 == 59 bytes left 
 } stakedao_parameters_t;
 
 _Static_assert(sizeof(stakedao_parameters_t) <= 5 * 32, "Structure of parameters too big.");
