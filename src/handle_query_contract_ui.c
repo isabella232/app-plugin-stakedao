@@ -26,11 +26,6 @@ static void set_strategy_name(ethQueryContractUI_t *msg, stakedao_parameters_t *
     strlcpy(msg->msg, context->strategy, msg->msgLength);
 }
 
-// static void set_sanctuary_name(ethQueryContractUI_t *msg, stakedao_parameters_t *context) {
-//     strlcpy(msg->title, "Sanctuary", msg->titleLength);
-//     strlcpy(msg->msg, context->strategy, msg->msgLength);
-// }
-
 static void set_want_name(ethQueryContractUI_t *msg, stakedao_parameters_t *context) {
     strlcpy(msg->title, "Want", msg->titleLength);
     strlcpy(msg->msg, context->want, msg->msgLength);
@@ -115,6 +110,7 @@ void handle_query_contract_ui_vaults(ethQueryContractUI_t *msg, stakedao_paramet
             context->decimals = currentVault->decimals;
             memcpy(context->want, currentVault->want, MAX_STRATEGY_TICKER_LEN);
             memcpy(context->strategy, currentVault->strategy, MAX_STRATEGY_TICKER_LEN);
+            memcpy(context->vault, currentVault->vault, MAX_STRATEGY_TICKER_LEN);
             break;
         }
     }
