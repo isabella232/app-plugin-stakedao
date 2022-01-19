@@ -28,9 +28,8 @@ void handle_finalize(void *parameters) {
 
     switch (context->selectorIndex) {
         case PREMIUM_EXIT:
-            break;
         case PREMIUM_GETREWARD:
-            msg->numScreens += 1;
+            //msg->numScreens += 1;
             break;
         default:
             msg->numScreens += 3;

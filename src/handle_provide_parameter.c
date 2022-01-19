@@ -5,17 +5,7 @@ static void copy_amount(uint8_t *dst, size_t dst_len, uint8_t *src) {
     memcpy(dst, src, len);
 }
 
-static void handle_deposit_all(ethPluginProvideParameter_t *msg, stakedao_parameters_t *context) {
-    switch (context->next_param) {
-        // no params
-        default:
-            PRINTF("Param not supported: %d\n", context->next_param);
-            msg->result = ETH_PLUGIN_RESULT_ERROR;
-            break;
-    }
-}
-
-static void handle_premium(ethPluginProvideParameter_t *msg, stakedao_parameters_t *context) {
+static void handle_no_params(ethPluginProvideParameter_t *msg, stakedao_parameters_t *context) {
     switch (context->next_param) {
         // no params
         default:
@@ -72,7 +62,6 @@ static void handle_premium_stake(ethPluginProvideParameter_t *msg, stakedao_para
 static void handle_lp(ethPluginProvideParameter_t *msg, stakedao_parameters_t *context) {
     switch (context->next_param) {
         case PID:
-            //copy_amount(context->pid, sizeof(context->pid), msg->parameter);
             memcpy(context->pid, msg->parameter, MAX_STRATEGY_TICKER_LEN);
             context->next_param = AMOUNT;
             break;
@@ -98,11 +87,9 @@ void handle_provide_parameter(void *parameters) {
 
     switch (context->selectorIndex) {
         case VAULT_DEPOSIT_ALL:
-            handle_deposit_all(msg, context);
-            break;
         case PREMIUM_GETREWARD:
         case PREMIUM_EXIT:
-            handle_premium(msg, context);
+            handle_no_params(msg, context);
             break;
         case LP_DEPOSIT:
         case LP_WITHDRAW:
