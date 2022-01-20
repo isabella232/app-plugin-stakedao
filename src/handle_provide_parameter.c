@@ -5,6 +5,18 @@ static void copy_amount(uint8_t *dst, size_t dst_len, uint8_t *src) {
     memcpy(dst, src, len);
 }
 
+static void copy_pid(uint8_t *dst, size_t dst_len, uint8_t *src) {
+    size_t offset = PARAMETER_LENGTH - MAX_STRATEGY_TICKER_LEN;
+    size_t len = MIN(dst_len, ADDRESS_LENGTH);
+    memcpy(dst, &src[offset], len);
+}
+
+static void copy_nft_id(uint8_t *dst, size_t dst_len, uint8_t *src) {
+    size_t offset = PARAMETER_LENGTH - MAX_STRATEGY_TICKER_LEN;
+    size_t len = MIN(dst_len, ADDRESS_LENGTH);
+    memcpy(dst, &src[offset], len);
+}
+
 static void handle_no_params(ethPluginProvideParameter_t *msg, stakedao_parameters_t *context) {
     switch (context->next_param) {
         // no params
@@ -50,7 +62,7 @@ static void handle_premium_stake(ethPluginProvideParameter_t *msg, stakedao_para
             context->next_param = NFT_ID;
             break;
         case NFT_ID:
-            memcpy(context->pid, msg->parameter, MAX_STRATEGY_TICKER_LEN);
+            copy_nft_id(context->pid, sizeof(context->pid), msg->parameter);
             break;
         default:
             PRINTF("Param not supported\n");
@@ -62,7 +74,7 @@ static void handle_premium_stake(ethPluginProvideParameter_t *msg, stakedao_para
 static void handle_lp(ethPluginProvideParameter_t *msg, stakedao_parameters_t *context) {
     switch (context->next_param) {
         case PID:
-            memcpy(context->pid, msg->parameter, MAX_STRATEGY_TICKER_LEN);
+            copy_pid(context->pid, sizeof(context->pid), msg->parameter);
             context->next_param = AMOUNT;
             break;
         case AMOUNT:

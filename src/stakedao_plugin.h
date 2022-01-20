@@ -64,7 +64,7 @@ typedef struct stakedao_parameters_t {
     char strategy[MAX_STRATEGY_TICKER_LEN];
     char want[MAX_STRATEGY_TICKER_LEN];
     char vault[MAX_STRATEGY_TICKER_LEN];
-    char pid[MAX_STRATEGY_TICKER_LEN];
+    uint8_t pid[MAX_STRATEGY_TICKER_LEN];
     uint8_t decimals;
     uint8_t next_param;
     stakedaoSelector_t selectorIndex;
