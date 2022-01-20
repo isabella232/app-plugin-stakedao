@@ -28,7 +28,15 @@ static void set_strategy_name(ethQueryContractUI_t *msg, stakedao_parameters_t *
 
 static void set_masterchef_name(ethQueryContractUI_t *msg, stakedao_parameters_t *context) {
     strlcpy(msg->title, "LP Farming PID", msg->titleLength);
-    strlcpy(msg->msg, context->pid, msg->msgLength);
+
+    uint8_t *pid_number = context->pid;
+    uint8_t pid_number_size = sizeof(context->pid);
+    amountToString(pid_number,
+                pid_number_size,
+                0,
+                "",
+                msg->msg,
+                msg->msgLength);
 }
 
 static void set_want_name(ethQueryContractUI_t *msg, stakedao_parameters_t *context) {
