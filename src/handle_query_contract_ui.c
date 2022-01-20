@@ -41,7 +41,7 @@ static void set_masterchef_want_name(ethQueryContractUI_t *msg) {
     strlcpy(msg->msg, "LP", msg->msgLength);
 }
 
-static void set_want_name_opt_eth_withdraw(ethQueryContractUI_t *msg, stakedao_parameters_t *context) {
+static void set_want_name_sd_token(ethQueryContractUI_t *msg, stakedao_parameters_t *context) {
     strlcpy(msg->title, "Want", msg->titleLength);
     strlcpy(msg->msg, context->vault, msg->msgLength);
 }
@@ -143,7 +143,11 @@ void handle_query_contract_ui_vaults(ethQueryContractUI_t *msg, stakedao_paramet
                     set_masterchef_want_name(msg);
                     break;
                 case OPT_WITHDRAW_ETH:
-                    set_want_name_opt_eth_withdraw(msg, context);
+                case OPT_WITHDRAW_UNDERLYING:
+                case OPT_WITHDRAW_CRVLP:
+                case VAULT_WITHDRAW:
+                case SANCTUARY_LEAVE:
+                    set_want_name_sd_token(msg, context);
                     break;
                 default:
                     set_want_name(msg, context);
@@ -161,6 +165,10 @@ void handle_query_contract_ui_vaults(ethQueryContractUI_t *msg, stakedao_paramet
                     set_eth_amount(msg);
                     break;
                 case OPT_WITHDRAW_ETH:
+                case OPT_WITHDRAW_UNDERLYING:
+                case OPT_WITHDRAW_CRVLP:
+                case VAULT_WITHDRAW:
+                case SANCTUARY_LEAVE:
                     set_sd_amount(msg, context);
                     break;
                 case VAULT_DEPOSIT:
@@ -171,10 +179,6 @@ void handle_query_contract_ui_vaults(ethQueryContractUI_t *msg, stakedao_paramet
                 case PALACE_WITHDRAW:
                 case PREMIUM_STAKE:
                 case PREMIUM_WITHDRAW:
-                case VAULT_WITHDRAW:
-                case SANCTUARY_LEAVE:
-                case OPT_WITHDRAW_UNDERLYING:
-                case OPT_WITHDRAW_CRVLP:
                 case LP_DEPOSIT:
                 case LP_WITHDRAW:
                     set_amount(msg, context);

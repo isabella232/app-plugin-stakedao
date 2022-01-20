@@ -6,10 +6,10 @@ import { ethers } from "ethers";
 // StakeDAO Masterchef
 const NETWORK = "ethereum";
 const contractAddr = "0xfea5e213bbd81a8a94d0e1edb09dbd7ceab61e1c";
-const AMOUNT_TO_WITHDRAW = '100259000000000000000'; // 100.25
-const PID = 2;
-const BASE_SCREENS_S = (1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1); //STAKEDAO + AMOUNT + GAS_FEES + VAULT + APPROVE
-const BASE_SCREENS_X = (1 + 1 + 1 + 1 + 1 + 1 + 1 + 1); //STAKEDAO + AMOUNT + GAS_FEES + VAULT + APPROVE
+const AMOUNT_TO_WITHDRAW = '100259000000000000000'; // 100.25 sd LP
+const PID = "2";
+const BASE_SCREENS_S = (1 + 1 + 1 + 1 + 3 + 1 + 1); // STAKEDAO + STRATEGY + WANT + AMOUNT +  STRATEGY ADDRESS (3) + GAS_FEES + ACCEPT
+const BASE_SCREENS_X = (1 + 1 + 1 + 1 + 3 + 1 + 1); // STAKEDAO + STRATEGY + WANT + AMOUNT +  STRATEGY ADDRESS (3) + GAS_FEES + ACCEPT
 
 test('[Nano S] Withdraw LPs from masterchef', zemu("nanos", async (sim, eth) => {
   const contract = new ethers.Contract(contractAddr, ['function withdraw(uint256,uint256)']);

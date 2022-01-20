@@ -7,8 +7,8 @@ import { ethers } from "ethers";
 const NETWORK = "ethereum";
 const contractAddr = "0x20d1b558ef44a6e23d9bf4bf8db1653626e642c3";
 const AMOUNT_TO_WITHDRAW = '1000000000000000000'; // 1 SDT
-const BASE_SCREENS_S = (1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1) //STAKEDAO + AMOUNT + GAS_FEES + VAULT + APPROVE
-const BASE_SCREENS_X = (1 + 1 + 1 + 1 + 1 + 1 + 1 + 1) //STAKEDAO + AMOUNT + GAS_FEES + VAULT + APPROVE
+const BASE_SCREENS_S = (1 + 1 + 1 + 1 + 3 + 1 + 1); // STAKEDAO + STRATEGY + WANT + AMOUNT +  STRATEGY ADDRESS (3) + GAS_FEES + ACCEPT
+const BASE_SCREENS_X = (1 + 1 + 1 + 1 + 3 + 1 + 1); // STAKEDAO + STRATEGY + WANT + AMOUNT +  STRATEGY ADDRESS (3) + GAS_FEES + ACCEPT
 
 test('[Nano S] Withdraw SDT from premium', zemu("nanos", async (sim, eth) => {
   const contract = new ethers.Contract(contractAddr, ['function withdraw(uint256)']);

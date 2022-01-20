@@ -7,8 +7,8 @@ import { ethers } from "ethers";
 const NETWORK = "ethereum";
 const contractAddr = "0x9b8f14554f40705de7908879e2228d2ac94fde1a";
 const MIN_ECRV = '0'; // 0 
-const BASE_SCREENS_S = 9; //STAKEDAO + AMOUNT + GAS_FEES + VAULT + APPROVE
-const BASE_SCREENS_X = (1 + 1 + 1 + 1 + 1); //STAKEDAO + AMOUNT + GAS_FEES + VAULT + APPROVE
+const BASE_SCREENS_S = (1 + 1 + 1 + 1 + 3 + 1 + 1); // STAKEDAO + STRATEGY + WANT + AMOUNT +  STRATEGY ADDRESS (3) + GAS_FEES + ACCEPT
+const BASE_SCREENS_X = (1 + 1 + 1 + 1 + 3 + 1 + 1); // STAKEDAO + STRATEGY + WANT + AMOUNT +  STRATEGY ADDRESS (3) + GAS_FEES + ACCEPT
 
 test('[Nano S] Deposit eth into vault', zemu("nanos", async (sim, eth) => {
   const contract = new ethers.Contract(contractAddr, ['function depositETH(uint256)']);

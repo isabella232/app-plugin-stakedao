@@ -6,9 +6,9 @@ import { ethers } from "ethers";
 // Sanctuary
 const NETWORK = "ethereum";
 const contractAddr = "0xac14864ce5a98af3248ffbf549441b04421247d3";
-const AMOUNT = '1000000000000000000'; // 1
-const BASE_SCREENS_S = 9 //STAKEDAO + AMOUNT + GAS_FEES + VAULT + APPROVE
-const BASE_SCREENS_X = (1 + 1 + 1 + 1 + 1) //STAKEDAO + AMOUNT + GAS_FEES + VAULT + APPROVE
+const AMOUNT = '1000000000000000000'; // 1 SDT
+const BASE_SCREENS_S = (1 + 1 + 1 + 1 + 3 + 1 + 1); // STAKEDAO + STRATEGY + WANT + AMOUNT +  STRATEGY ADDRESS (3) + GAS_FEES + ACCEPT
+const BASE_SCREENS_X = (1 + 1 + 1 + 1 + 3 + 1 + 1); // STAKEDAO + STRATEGY + WANT + AMOUNT +  STRATEGY ADDRESS (3) + GAS_FEES + ACCEPT
 
 test('[Nano S] Deposit SDT into Sanctuary', zemu("nanos", async (sim, eth) => {
   const contract = new ethers.Contract(contractAddr, ['function enter(uint256)']);
