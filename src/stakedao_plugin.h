@@ -7,6 +7,7 @@
 #define SELECTOR_SIZE 4
 #define MAX_STRATEGY_TICKER_LEN 16
 #define NUM_STAKEDAO_SELECTORS 19
+#define NUM_STAKEDAO_STRATEGIES 14
 
 #define PLUGIN_NAME "StakeDAO"
 
@@ -38,7 +39,9 @@ typedef enum {
     AMOUNT,
     TOKEN,
     VAULT,
-    PID
+    PID,
+    MIN_AMOUNT,
+    NFT_ID
 } selectorField;
 
 extern const uint8_t *const STAKEDAO_SELECTORS[NUM_STAKEDAO_SELECTORS];
@@ -51,24 +54,20 @@ typedef struct stakedaoStrategy_t {
     uint8_t decimals;
 } stakedaoStrategy_t;
 
-#define NUM_STAKEDAO_STRATEGIES 10
 extern stakedaoStrategy_t const STAKEDAO_STRATEGIES[NUM_STAKEDAO_STRATEGIES];
 
 // Shared global memory with Ethereum app. Must be at most 5 * 32 bytes.
 typedef struct stakedao_parameters_t {
     uint8_t amount[INT256_LENGTH];
+    uint8_t min_amount[INT256_LENGTH];
     uint8_t address[ADDRESS_LENGTH];
-    //uint8_t extra_address[ADDRESS_LENGTH];
     char strategy[MAX_STRATEGY_TICKER_LEN];
     char want[MAX_STRATEGY_TICKER_LEN];
     char vault[MAX_STRATEGY_TICKER_LEN];
-    // 32 + 20 + 20  + 32 + 12 == 96
-    // 32 * 5 == 160 - 96 = 64 bytes left
-    uint8_t pid;
+    char pid[MAX_STRATEGY_TICKER_LEN];
     uint8_t decimals;
     uint8_t next_param;
     stakedaoSelector_t selectorIndex;
-    // 5 bytes. 64 - 5 == 59 bytes left 
 } stakedao_parameters_t;
 
 _Static_assert(sizeof(stakedao_parameters_t) <= 5 * 32, "Structure of parameters too big.");

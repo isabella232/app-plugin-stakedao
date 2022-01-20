@@ -53,6 +53,7 @@ void handle_init_contract(void *parameters) {
         case LP_DEPOSIT:
         case LP_WITHDRAW:
             context->next_param = PID;
+            context->decimals = 18;
             break;
         default:
             PRINTF("Missing selectorIndex\n");

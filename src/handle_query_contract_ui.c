@@ -26,14 +26,48 @@ static void set_strategy_name(ethQueryContractUI_t *msg, stakedao_parameters_t *
     strlcpy(msg->msg, context->strategy, msg->msgLength);
 }
 
+static void set_masterchef_name(ethQueryContractUI_t *msg, stakedao_parameters_t *context) {
+    strlcpy(msg->title, "LP Farming PID", msg->titleLength);
+    strlcpy(msg->msg, context->pid, msg->msgLength);
+}
+
 static void set_want_name(ethQueryContractUI_t *msg, stakedao_parameters_t *context) {
     strlcpy(msg->title, "Want", msg->titleLength);
     strlcpy(msg->msg, context->want, msg->msgLength);
 }
 
+static void set_masterchef_want_name(ethQueryContractUI_t *msg) {
+    strlcpy(msg->title, "Want", msg->titleLength);
+    strlcpy(msg->msg, "LP", msg->msgLength);
+}
+
+static void set_want_name_sd_token(ethQueryContractUI_t *msg, stakedao_parameters_t *context) {
+    strlcpy(msg->title, "Want", msg->titleLength);
+    strlcpy(msg->msg, context->vault, msg->msgLength);
+}
+
 static void set_amount_with_all(ethQueryContractUI_t *msg) {
     strlcpy(msg->title, "Amount", msg->titleLength);
     strlcpy(msg->msg, "ALL", msg->msgLength);
+}
+
+static void set_eth_amount(ethQueryContractUI_t *msg) {
+    strlcpy(msg->title, "Amount", msg->titleLength);
+    
+    // The number of ETH associated with this transaction is
+    // located in `msg->pluginSharedRO->txContent->value.
+    uint8_t *eth_amount = msg->pluginSharedRO->txContent->value.value;
+    uint8_t eth_amount_size = msg->pluginSharedRO->txContent->value.length;
+
+    // `amountToString` is a utility function that converts a `uin256_t` to
+    //  a string.
+    // `18` and `ETH ` refer to the decimals and the ticker.
+    amountToString(eth_amount,
+                eth_amount_size,
+                18,
+                "ETH",
+                msg->msg,
+                msg->msgLength);
 }
 
 static void set_amount(ethQueryContractUI_t *msg, stakedao_parameters_t *context) {
@@ -43,6 +77,17 @@ static void set_amount(ethQueryContractUI_t *msg, stakedao_parameters_t *context
                             context->decimals,
                             context->want,
                             sizeof(context->want),
+                            msg->msg,
+                            msg->msgLength);
+}
+
+static void set_sd_amount(ethQueryContractUI_t *msg, stakedao_parameters_t *context) {
+    strlcpy(msg->title, "Amount", msg->titleLength);
+    copy_amount_with_ticker(context->amount,
+                            sizeof(context->amount),
+                            context->decimals,
+                            context->vault,
+                            sizeof(context->vault),
                             msg->msg,
                             msg->msgLength);
 }
@@ -71,19 +116,43 @@ void handle_query_contract_ui_vaults(ethQueryContractUI_t *msg, stakedao_paramet
     stakedaoStrategy_t *currentVault = NULL;
     for (i = 0; i < NUM_STAKEDAO_STRATEGIES; i++) {
         currentVault = (stakedaoStrategy_t *) PIC(&STAKEDAO_STRATEGIES[i]);
-        if (memcmp(currentVault->address, context->vault, ADDRESS_LENGTH) == 0) {
+        if (memcmp(currentVault->address, context->address, ADDRESS_LENGTH) == 0) {
             context->decimals = currentVault->decimals;
             memcpy(context->want, currentVault->want, MAX_STRATEGY_TICKER_LEN);
             memcpy(context->strategy, currentVault->strategy, MAX_STRATEGY_TICKER_LEN);
+            memcpy(context->vault, currentVault->vault, MAX_STRATEGY_TICKER_LEN);
             break;
         }
     }
     switch (msg->screenIndex) {
         case 0:
-            set_strategy_name(msg, context);
+            switch (context->selectorIndex) {
+                case LP_DEPOSIT:
+                case LP_WITHDRAW:
+                    set_masterchef_name(msg, context);
+                    break;
+                default:
+                    set_strategy_name(msg, context);
+                    break;
+            }
             break;
         case 1:
-            set_want_name(msg, context);
+            switch (context->selectorIndex) {
+                case LP_DEPOSIT:
+                case LP_WITHDRAW:
+                    set_masterchef_want_name(msg);
+                    break;
+                case OPT_WITHDRAW_ETH:
+                case OPT_WITHDRAW_UNDERLYING:
+                case OPT_WITHDRAW_CRVLP:
+                case VAULT_WITHDRAW:
+                case SANCTUARY_LEAVE:
+                    set_want_name_sd_token(msg, context);
+                    break;
+                default:
+                    set_want_name(msg, context);
+                    break;
+            }
             break;
         case 2:
             switch (context->selectorIndex) {
@@ -92,20 +161,24 @@ void handle_query_contract_ui_vaults(ethQueryContractUI_t *msg, stakedao_paramet
                 case PREMIUM_GETREWARD:
                     set_amount_with_all(msg);
                     break;
+                case OPT_DEPOSIT_ETH:
+                    set_eth_amount(msg);
+                    break;
+                case OPT_WITHDRAW_ETH:
+                case OPT_WITHDRAW_UNDERLYING:
+                case OPT_WITHDRAW_CRVLP:
+                case VAULT_WITHDRAW:
+                case SANCTUARY_LEAVE:
+                    set_sd_amount(msg, context);
+                    break;
                 case VAULT_DEPOSIT:
                 case SANCTUARY_ENTER:
-                case OPT_DEPOSIT_ETH:
                 case OPT_DEPOSIT_UNDERLYING:
                 case OPT_DEPOSIT_CRVLP:
                 case PALACE_STAKE:
                 case PALACE_WITHDRAW:
                 case PREMIUM_STAKE:
                 case PREMIUM_WITHDRAW:
-                case VAULT_WITHDRAW:
-                case SANCTUARY_LEAVE:
-                case OPT_WITHDRAW_ETH:
-                case OPT_WITHDRAW_UNDERLYING:
-                case OPT_WITHDRAW_CRVLP:
                 case LP_DEPOSIT:
                 case LP_WITHDRAW:
                     set_amount(msg, context);

@@ -2,6 +2,7 @@ import Zemu from '@zondax/zemu';
 import Eth from '@ledgerhq/hw-app-eth';
 import { generate_plugin_config } from './generate_plugin_config';
 import { parseEther, parseUnits, RLP} from "ethers/lib/utils";
+import { test } from '../jest';
 
 const transactionUploadDelay = 60000;
 
@@ -27,7 +28,7 @@ const NANOX_PLUGIN_PATH = Resolve('elfs/plugin_nanox.elf');
 const NANOS_PLUGIN = { "StakeDAO": NANOS_PLUGIN_PATH };
 const NANOX_PLUGIN = { "StakeDAO": NANOX_PLUGIN_PATH };
 
-const boilerplateJSON = generate_plugin_config();
+//const stakedaoJSON = generate_plugin_config();
 
 const SPECULOS_ADDRESS = '0xFE984369CE3919AA7BB4F431082D027B4F8ED70C';
 const RANDOM_ADDRESS = '0xaaaabbbbccccddddeeeeffffgggghhhhiiiijjjj'
@@ -74,7 +75,7 @@ function txFromEtherscan(rawTx) {
     return txType + encoded;
 }
 
-function zemu(device, func) {
+function zemu(device, func, testNetwork="ethereum") {
     return async () => {
         jest.setTimeout(TIMEOUT);
         let eth_path;
@@ -97,9 +98,9 @@ function zemu(device, func) {
             await sim.start(sim_options);
             const transport = await sim.getTransport();
             const eth = new Eth(transport);
-            eth.setPluginsLoadConfig({
+            eth.setLoadConfig({
                 baseURL: null,
-                extraPlugins: boilerplateJSON,
+                extraPlugins: generate_plugin_config(testNetwork),
             });
             await func(sim, eth);
         } finally {

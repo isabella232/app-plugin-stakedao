@@ -13,26 +13,20 @@ void handle_query_contract_id(void *parameters) {
         case OPT_DEPOSIT_UNDERLYING:
         case OPT_DEPOSIT_CRVLP:
         case SANCTUARY_ENTER:
+        case PREMIUM_STAKE:
+        case LP_DEPOSIT:
+        case PALACE_STAKE:
             strlcpy(msg->name, PLUGIN_NAME, msg->nameLength);
             strlcpy(msg->version, "Deposit", msg->versionLength);
             break;
+        case PREMIUM_WITHDRAW:
+        case LP_WITHDRAW:
+        case PALACE_WITHDRAW:
         case VAULT_WITHDRAW:
         case OPT_WITHDRAW_ETH:
         case OPT_WITHDRAW_CRVLP:
         case OPT_WITHDRAW_UNDERLYING:
         case SANCTUARY_LEAVE:
-            strlcpy(msg->name, PLUGIN_NAME, msg->nameLength);
-            strlcpy(msg->version, "Withdraw", msg->versionLength);
-            break;
-        case PREMIUM_STAKE:
-        case LP_DEPOSIT:
-        case PALACE_STAKE:
-            strlcpy(msg->name, PLUGIN_NAME, msg->nameLength);
-            strlcpy(msg->version, "Stake", msg->versionLength);
-            break;
-        case PREMIUM_WITHDRAW:
-        case LP_WITHDRAW:
-        case PALACE_WITHDRAW:
             strlcpy(msg->name, PLUGIN_NAME, msg->nameLength);
             strlcpy(msg->version, "Withdraw", msg->versionLength);
             break;
