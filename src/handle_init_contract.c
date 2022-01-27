@@ -55,6 +55,9 @@ void handle_init_contract(void *parameters) {
             context->next_param = PID;
             context->decimals = 18;
             break;
+        case REWARDS_CLAIM:
+            context->next_param = MERKLE_INDEX;
+            break;
         default:
             PRINTF("Missing selectorIndex\n");
             msg->result = ETH_PLUGIN_RESULT_ERROR;

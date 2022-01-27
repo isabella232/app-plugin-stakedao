@@ -31,6 +31,7 @@ void handle_query_contract_id(void *parameters) {
             strlcpy(msg->version, "Withdraw", msg->versionLength);
             break;
         case PREMIUM_GETREWARD:
+        case REWARDS_CLAIM:
             strlcpy(msg->name, PLUGIN_NAME, msg->nameLength);
             strlcpy(msg->version, "Get Reward", msg->versionLength);
             break;

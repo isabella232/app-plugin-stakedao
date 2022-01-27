@@ -26,6 +26,16 @@ static void set_strategy_name(ethQueryContractUI_t *msg, stakedao_parameters_t *
     strlcpy(msg->msg, context->strategy, msg->msgLength);
 }
 
+static void set_rewards_name(ethQueryContractUI_t *msg) {
+    strlcpy(msg->title, "Rewards", msg->titleLength);
+    strlcpy(msg->msg, "Claim", msg->msgLength);
+}
+
+static void set_rewards_receive_name(ethQueryContractUI_t *msg) {
+    strlcpy(msg->title, "Receive", msg->titleLength);
+    strlcpy(msg->msg, "xSDT", msg->msgLength);
+}
+
 static void set_masterchef_name(ethQueryContractUI_t *msg, stakedao_parameters_t *context) {
     strlcpy(msg->title, "LP Farming PID", msg->titleLength);
 
@@ -74,6 +84,16 @@ static void set_eth_amount(ethQueryContractUI_t *msg) {
                 eth_amount_size,
                 18,
                 "ETH",
+                msg->msg,
+                msg->msgLength);
+}
+
+static void set_reward_amount(ethQueryContractUI_t *msg, stakedao_parameters_t *context) {
+    strlcpy(msg->title, "Amount", msg->titleLength);
+    amountToString(context->amount,
+                sizeof(context->amount),
+                18,
+                "xSDT",
                 msg->msg,
                 msg->msgLength);
 }
@@ -139,6 +159,9 @@ void handle_query_contract_ui_vaults(ethQueryContractUI_t *msg, stakedao_paramet
                 case LP_WITHDRAW:
                     set_masterchef_name(msg, context);
                     break;
+                case REWARDS_CLAIM:
+                    set_rewards_name(msg);
+                    break;
                 default:
                     set_strategy_name(msg, context);
                     break;
@@ -156,6 +179,9 @@ void handle_query_contract_ui_vaults(ethQueryContractUI_t *msg, stakedao_paramet
                 case VAULT_WITHDRAW:
                 case SANCTUARY_LEAVE:
                     set_want_name_sd_token(msg, context);
+                    break;
+                case REWARDS_CLAIM:
+                    set_rewards_receive_name(msg);
                     break;
                 default:
                     set_want_name(msg, context);
@@ -190,6 +216,9 @@ void handle_query_contract_ui_vaults(ethQueryContractUI_t *msg, stakedao_paramet
                 case LP_DEPOSIT:
                 case LP_WITHDRAW:
                     set_amount(msg, context);
+                    break;
+                case REWARDS_CLAIM:
+                    set_reward_amount(msg, context);
                     break;
                 default:
                     break;

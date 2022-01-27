@@ -87,6 +87,27 @@ static void handle_lp(ethPluginProvideParameter_t *msg, stakedao_parameters_t *c
     }
 }
 
+static void handle_rewards_claim(ethPluginProvideParameter_t *msg, stakedao_parameters_t *context) {
+    switch (context->next_param) {
+        case MERKLE_INDEX:
+            context->next_param = INDEX;
+            break;
+        case INDEX:
+            context->next_param = AMOUNT;
+            break;
+        case AMOUNT:
+            copy_amount(context->amount, sizeof(context->amount), msg->parameter);
+            context->next_param = MERKLE_PROOF;
+            break;
+        case MERKLE_PROOF:
+            break;
+        default:
+            PRINTF("Param not supported\n");
+            msg->result = ETH_PLUGIN_RESULT_ERROR;
+            break;
+    }
+}
+
 void handle_provide_parameter(void *parameters) {
     ethPluginProvideParameter_t *msg = (ethPluginProvideParameter_t *) parameters;
     stakedao_parameters_t *context = (stakedao_parameters_t *) msg->pluginContext;
@@ -126,6 +147,9 @@ void handle_provide_parameter(void *parameters) {
         case PALACE_STAKE:
         case PALACE_WITHDRAW:
             handle_vault(msg, context);
+            break;
+        case REWARDS_CLAIM:
+            handle_rewards_claim(msg, context);
             break;
         default:
             PRINTF("Selector Index %d not supported\n", context->selectorIndex);

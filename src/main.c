@@ -70,6 +70,9 @@ static const uint8_t STAKEDAO_PALACE_STAKE_SELECTOR[SELECTOR_SIZE] = {0xa6, 0x94
 // function withdraw(uint256) same as vault withdraw but used another selector to be more precise
 static const uint8_t STAKEDAO_PALACE_WITHDRAW_SELECTOR[SELECTOR_SIZE] = {0x2e, 0x1a, 0x7d, 0x4d};
 
+// Rewards
+// function claim(uint256, uint256, uint256, byte2[])
+static const uint8_t STAKEDAO_REWARDS_CLAIM_SELECTOR[SELECTOR_SIZE] = {0xea, 0x25, 0xe1, 0x76};
 
 
 // Array of all the different stakedao selectors.
@@ -92,7 +95,8 @@ const uint8_t *const STAKEDAO_SELECTORS[NUM_STAKEDAO_SELECTORS] = {
     STAKEDAO_SANCTUARY_ENTER_SELECTOR,
     STAKEDAO_SANCTUARY_LEAVE_SELECTOR,
     STAKEDAO_PALACE_STAKE_SELECTOR,
-    STAKEDAO_PALACE_WITHDRAW_SELECTOR
+    STAKEDAO_PALACE_WITHDRAW_SELECTOR,
+    STAKEDAO_REWARDS_CLAIM_SELECTOR
 };
 
 const stakedaoStrategy_t STAKEDAO_STRATEGIES[NUM_STAKEDAO_STRATEGIES] = {
