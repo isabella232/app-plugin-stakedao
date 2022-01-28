@@ -31,6 +31,11 @@ static void set_rewards_name(ethQueryContractUI_t *msg) {
     strlcpy(msg->msg, "Claim", msg->msgLength);
 }
 
+static void set_nft_boost_name(ethQueryContractUI_t *msg) {
+    strlcpy(msg->title, "Strategy", msg->titleLength);
+    strlcpy(msg->msg, "NFTBoost", msg->msgLength);
+}
+
 static void set_rewards_receive_name(ethQueryContractUI_t *msg) {
     strlcpy(msg->title, "Receive", msg->titleLength);
     strlcpy(msg->msg, "xSDT", msg->msgLength);
@@ -64,9 +69,31 @@ static void set_want_name_sd_token(ethQueryContractUI_t *msg, stakedao_parameter
     strlcpy(msg->msg, context->vault, msg->msgLength);
 }
 
+static void set_nft_want_name(ethQueryContractUI_t *msg) {
+    strlcpy(msg->title, "Want", msg->titleLength);
+    strlcpy(msg->msg, "StakeDAO NFTs", msg->msgLength);
+}
+
 static void set_amount_with_all(ethQueryContractUI_t *msg) {
     strlcpy(msg->title, "Amount", msg->titleLength);
     strlcpy(msg->msg, "ALL", msg->msgLength);
+}
+
+static void set_nft_id(ethQueryContractUI_t *msg, stakedao_parameters_t *context) {
+    strlcpy(msg->title, "Id", msg->titleLength);
+    uint8_t *pid_number = context->pid;
+    uint8_t pid_number_size = sizeof(context->pid);
+    amountToString(pid_number,
+                pid_number_size,
+                0,
+                "",
+                msg->msg,
+                msg->msgLength);
+}
+
+static void set_nft_amount(ethQueryContractUI_t *msg) {
+    strlcpy(msg->title, "Amount", msg->titleLength);
+    strlcpy(msg->msg, "1", msg->msgLength);
 }
 
 static void set_eth_amount(ethQueryContractUI_t *msg) {
@@ -162,6 +189,10 @@ void handle_query_contract_ui_vaults(ethQueryContractUI_t *msg, stakedao_paramet
                 case REWARDS_CLAIM:
                     set_rewards_name(msg);
                     break;
+                case NFT_STAKE:
+                case NFT_UNSTAKE:
+                    set_nft_boost_name(msg);
+                    break;
                 default:
                     set_strategy_name(msg, context);
                     break;
@@ -182,6 +213,12 @@ void handle_query_contract_ui_vaults(ethQueryContractUI_t *msg, stakedao_paramet
                     break;
                 case REWARDS_CLAIM:
                     set_rewards_receive_name(msg);
+                    break;
+                case NFT_STAKE:
+                    set_nft_want_name(msg);
+                    break;
+                case NFT_UNSTAKE:
+                    set_nft_want_name(msg);
                     break;
                 default:
                     set_want_name(msg, context);
@@ -219,6 +256,12 @@ void handle_query_contract_ui_vaults(ethQueryContractUI_t *msg, stakedao_paramet
                     break;
                 case REWARDS_CLAIM:
                     set_reward_amount(msg, context);
+                    break;
+                case NFT_STAKE:
+                    set_nft_id(msg, context);
+                    break;
+                case NFT_UNSTAKE:
+                    set_nft_amount(msg);
                     break;
                 default:
                     break;

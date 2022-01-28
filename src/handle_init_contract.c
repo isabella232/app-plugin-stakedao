@@ -20,6 +20,13 @@ void handle_init_contract(void *parameters) {
     uint8_t i;
     for (i = 0; i < NUM_STAKEDAO_SELECTORS; i++) {
         if (memcmp(PIC(STAKEDAO_SELECTORS[i]), msg->selector, SELECTOR_SIZE) == 0) {
+            if (i == 17) {
+                ethPluginSharedRO_t *pluginSharedRO = (ethPluginSharedRO_t *) msg->pluginSharedRO;
+                if(memcmp(pluginSharedRO->txContent->destination, STAKEDAO_NFT_BOOST, ADDRESS_LENGTH) == 0) {
+                    context->selectorIndex = 20;
+                    break;
+                }
+            }
             context->selectorIndex = i;
             break;
         }
@@ -34,6 +41,7 @@ void handle_init_contract(void *parameters) {
         case OPT_DEPOSIT_ETH:
         case PREMIUM_EXIT:
         case PREMIUM_GETREWARD:
+        case NFT_UNSTAKE:
             break;
         case VAULT_DEPOSIT:
         case VAULT_WITHDRAW:
@@ -57,6 +65,9 @@ void handle_init_contract(void *parameters) {
             break;
         case REWARDS_CLAIM:
             context->next_param = MERKLE_INDEX;
+            break;
+        case NFT_STAKE:
+            context->next_param = NFT_ID;
             break;
         default:
             PRINTF("Missing selectorIndex\n");

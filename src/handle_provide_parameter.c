@@ -108,6 +108,18 @@ static void handle_rewards_claim(ethPluginProvideParameter_t *msg, stakedao_para
     }
 }
 
+static void handle_nft_stake(ethPluginProvideParameter_t *msg, stakedao_parameters_t *context) {
+    switch (context->next_param) {
+        case NFT_ID:
+            copy_pid(context->pid, sizeof(context->pid), msg->parameter);
+            break;
+        default:
+            PRINTF("Param not supported\n");
+            msg->result = ETH_PLUGIN_RESULT_ERROR;
+            break;
+    }
+}
+
 void handle_provide_parameter(void *parameters) {
     ethPluginProvideParameter_t *msg = (ethPluginProvideParameter_t *) parameters;
     stakedao_parameters_t *context = (stakedao_parameters_t *) msg->pluginContext;
@@ -122,6 +134,7 @@ void handle_provide_parameter(void *parameters) {
         case VAULT_DEPOSIT_ALL:
         case PREMIUM_GETREWARD:
         case PREMIUM_EXIT:
+        case NFT_UNSTAKE:
             handle_no_params(msg, context);
             break;
         case LP_DEPOSIT:
@@ -150,6 +163,9 @@ void handle_provide_parameter(void *parameters) {
             break;
         case REWARDS_CLAIM:
             handle_rewards_claim(msg, context);
+            break;
+        case NFT_STAKE:
+            handle_nft_stake(msg, context);
             break;
         default:
             PRINTF("Selector Index %d not supported\n", context->selectorIndex);
