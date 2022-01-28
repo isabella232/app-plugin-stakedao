@@ -6,8 +6,8 @@
 #define PARAMETER_LENGTH 32
 #define SELECTOR_SIZE 4
 #define MAX_STRATEGY_TICKER_LEN 16
-#define NUM_STAKEDAO_SELECTORS 22
-#define NUM_STAKEDAO_STRATEGIES 14
+#define NUM_STAKEDAO_SELECTORS 23
+#define NUM_STAKEDAO_STRATEGIES 15
 
 #define PLUGIN_NAME "StakeDAO"
 
@@ -35,7 +35,8 @@ typedef enum {
     PALACE_WITHDRAW,
     REWARDS_CLAIM,
     NFT_STAKE,
-    NFT_UNSTAKE
+    NFT_UNSTAKE,
+    ANGLE_GET_REWARD
 } stakedaoSelector_t;
 
 typedef enum {
@@ -47,7 +48,8 @@ typedef enum {
     NFT_ID,
     MERKLE_INDEX,
     INDEX,
-    MERKLE_PROOF
+    MERKLE_PROOF,
+    USER
 } selectorField;
 
 extern const uint8_t *const STAKEDAO_SELECTORS[NUM_STAKEDAO_SELECTORS];

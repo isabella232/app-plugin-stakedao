@@ -108,6 +108,18 @@ static void handle_rewards_claim(ethPluginProvideParameter_t *msg, stakedao_para
     }
 }
 
+static void handle_angle_reward(ethPluginProvideParameter_t *msg, stakedao_parameters_t *context) {
+    switch (context->next_param) {
+        case USER:
+            copy_address(context->address, msg->parameter, sizeof(context->address));
+            break;
+        default:
+            PRINTF("Param not supported\n");
+            msg->result = ETH_PLUGIN_RESULT_ERROR;
+            break;
+    }
+}
+
 static void handle_nft_stake(ethPluginProvideParameter_t *msg, stakedao_parameters_t *context) {
     switch (context->next_param) {
         case NFT_ID:
@@ -166,6 +178,9 @@ void handle_provide_parameter(void *parameters) {
             break;
         case NFT_STAKE:
             handle_nft_stake(msg, context);
+            break;
+        case ANGLE_GET_REWARD:
+            handle_angle_reward(msg, context);
             break;
         default:
             PRINTF("Selector Index %d not supported\n", context->selectorIndex);

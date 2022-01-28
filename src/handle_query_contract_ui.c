@@ -41,6 +41,11 @@ static void set_rewards_receive_name(ethQueryContractUI_t *msg) {
     strlcpy(msg->msg, "xSDT", msg->msgLength);
 }
 
+static void set_angle_rewards_receive_name(ethQueryContractUI_t *msg) {
+    strlcpy(msg->title, "Receive", msg->titleLength);
+    strlcpy(msg->msg, "ANGLE", msg->msgLength);
+}
+
 static void set_masterchef_name(ethQueryContractUI_t *msg, stakedao_parameters_t *context) {
     strlcpy(msg->title, "LP Farming PID", msg->titleLength);
 
@@ -187,6 +192,7 @@ void handle_query_contract_ui_vaults(ethQueryContractUI_t *msg, stakedao_paramet
                     set_masterchef_name(msg, context);
                     break;
                 case REWARDS_CLAIM:
+                case ANGLE_GET_REWARD:
                     set_rewards_name(msg);
                     break;
                 case NFT_STAKE:
@@ -220,6 +226,9 @@ void handle_query_contract_ui_vaults(ethQueryContractUI_t *msg, stakedao_paramet
                 case NFT_UNSTAKE:
                     set_nft_want_name(msg);
                     break;
+                case ANGLE_GET_REWARD:
+                    set_angle_rewards_receive_name(msg);
+                    break;
                 default:
                     set_want_name(msg, context);
                     break;
@@ -230,6 +239,7 @@ void handle_query_contract_ui_vaults(ethQueryContractUI_t *msg, stakedao_paramet
                 case VAULT_DEPOSIT_ALL:
                 case PREMIUM_EXIT:
                 case PREMIUM_GETREWARD:
+                case ANGLE_GET_REWARD:
                     set_amount_with_all(msg);
                     break;
                 case OPT_DEPOSIT_ETH:

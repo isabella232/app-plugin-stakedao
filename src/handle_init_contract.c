@@ -69,6 +69,9 @@ void handle_init_contract(void *parameters) {
         case NFT_STAKE:
             context->next_param = NFT_ID;
             break;
+        case ANGLE_GET_REWARD:
+            context->next_param = USER;
+            break;
         default:
             PRINTF("Missing selectorIndex\n");
             msg->result = ETH_PLUGIN_RESULT_ERROR;

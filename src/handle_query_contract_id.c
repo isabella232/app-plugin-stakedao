@@ -32,6 +32,7 @@ void handle_query_contract_id(void *parameters) {
             break;
         case PREMIUM_GETREWARD:
         case REWARDS_CLAIM:
+        case ANGLE_GET_REWARD:
             strlcpy(msg->name, PLUGIN_NAME, msg->nameLength);
             strlcpy(msg->version, "Get Reward", msg->versionLength);
             break;

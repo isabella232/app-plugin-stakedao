@@ -80,6 +80,10 @@ static const uint8_t STAKEDAO_NFT_STAKE_SELECTOR[SELECTOR_SIZE] = {0xa6, 0x94, 0
 // function unstake()
 static const uint8_t STAKEDAO_NFT_UNSTAKE_SELECTOR[SELECTOR_SIZE] = {0x2d, 0xef, 0x66, 0x20};
 
+// Angle strategy
+// function getRewardFor(address)
+static const uint8_t STAKEDAO_ANGLE_GET_REWARD_SELECTOR[SELECTOR_SIZE] = {0x05, 0x5d, 0xe2, 0x75};
+
 const uint8_t STAKEDAO_NFT_BOOST[ADDRESS_LENGTH] = {0xa3, 0x24, 0xa2, 0xe3, 0xa6, 0xf6, 0x4b, 0xd5, 0x88, 0x56, 0x5e, 0x0e, 0x1e, 0x2d, 0xd5, 0x0e, 0x7a, 0x68, 0xbd, 0xd9};
 
 
@@ -106,7 +110,8 @@ const uint8_t *const STAKEDAO_SELECTORS[NUM_STAKEDAO_SELECTORS] = {
     STAKEDAO_PALACE_WITHDRAW_SELECTOR,
     STAKEDAO_REWARDS_CLAIM_SELECTOR,
     STAKEDAO_NFT_STAKE_SELECTOR,
-    STAKEDAO_NFT_UNSTAKE_SELECTOR
+    STAKEDAO_NFT_UNSTAKE_SELECTOR,
+    STAKEDAO_ANGLE_GET_REWARD_SELECTOR
 };
 
 const stakedaoStrategy_t STAKEDAO_STRATEGIES[NUM_STAKEDAO_STRATEGIES] = {
@@ -193,6 +198,12 @@ const stakedaoStrategy_t STAKEDAO_STRATEGIES[NUM_STAKEDAO_STRATEGIES] = {
      "Passive BTC pol",
      "btcCRV",
      "sdbtcCRV",
+     18},
+     {{0xf3, 0xc2, 0xbd, 0xfc, 0xcb, 0x75, 0xca, 0xfd, 0xa3, 0xd6,
+       0x9d, 0x80, 0x7c, 0x33, 0x6b, 0xed, 0xe9, 0x56, 0x56, 0x3f},
+     "Passive Angle",
+     "usdc",
+     "sdsanUSDC_EUR",
      18}
 };
 

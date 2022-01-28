@@ -133,6 +133,16 @@
                     "plugin": "StakeDAO"
 		        }
 	        }
+        },
+        {
+            "address": "0x3c310fc54c0534dc3c45312934508722284352d1",
+            "contractName": "AngleG",
+            "selectors": {
+                "0x055de275": {
+                    "method": "getRewardFor",
+                    "plugin": "StakeDAO"
+		        }
+	        }
         }
     ],
     "name": "StakeDAO"
