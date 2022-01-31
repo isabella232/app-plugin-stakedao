@@ -31,12 +31,22 @@ void handle_query_contract_id(void *parameters) {
             strlcpy(msg->version, "Withdraw", msg->versionLength);
             break;
         case PREMIUM_GETREWARD:
+        case REWARDS_CLAIM:
+        case ANGLE_GET_REWARD:
             strlcpy(msg->name, PLUGIN_NAME, msg->nameLength);
             strlcpy(msg->version, "Get Reward", msg->versionLength);
             break;
         case PREMIUM_EXIT:
             strlcpy(msg->name, PLUGIN_NAME, msg->nameLength);
             strlcpy(msg->version, "Exit", msg->versionLength);
+            break;
+        case NFT_STAKE:
+            strlcpy(msg->name, PLUGIN_NAME, msg->nameLength);
+            strlcpy(msg->version, "Stake", msg->versionLength);
+            break;
+        case NFT_UNSTAKE:
+            strlcpy(msg->name, PLUGIN_NAME, msg->nameLength);
+            strlcpy(msg->version, "Unstake", msg->versionLength);
             break;
         default:
             PRINTF("Selector Index :%d not supported\n", context->selectorIndex);
