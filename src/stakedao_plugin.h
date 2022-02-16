@@ -6,8 +6,9 @@
 #define PARAMETER_LENGTH 32
 #define SELECTOR_SIZE 4
 #define MAX_STRATEGY_TICKER_LEN 16
-#define NUM_STAKEDAO_SELECTORS 23
-#define NUM_STAKEDAO_STRATEGIES 15
+#define NUM_STAKEDAO_SELECTORS 26
+#define NUM_STAKEDAO_STRATEGIES 19
+#define NUM_CURVE_POOLS 4
 
 #define PLUGIN_NAME "StakeDAO"
 
@@ -36,7 +37,10 @@ typedef enum {
     REWARDS_CLAIM,
     NFT_STAKE,
     NFT_UNSTAKE,
-    ANGLE_GET_REWARD
+    ANGLE_GET_REWARD,
+    CURVE_ADD_L_2,
+    CURVE_ADD_L_3,
+    CURVE_ADD_L_3_UNDER
 } stakedaoSelector_t;
 
 typedef enum {
@@ -49,7 +53,10 @@ typedef enum {
     MERKLE_INDEX,
     INDEX,
     MERKLE_PROOF,
-    USER
+    USER,
+    TOKEN_1,
+    TOKEN_2,
+    TOKEN_3
 } selectorField;
 
 extern const uint8_t *const STAKEDAO_SELECTORS[NUM_STAKEDAO_SELECTORS];
@@ -62,7 +69,14 @@ typedef struct stakedaoStrategy_t {
     uint8_t decimals;
 } stakedaoStrategy_t;
 
+typedef struct stakedaoCrvPool_t {
+    uint8_t address[ADDRESS_LENGTH];
+    char want[MAX_STRATEGY_TICKER_LEN];
+    char pool[MAX_STRATEGY_TICKER_LEN];
+} stakedaoCrvPool_t;
+
 extern stakedaoStrategy_t const STAKEDAO_STRATEGIES[NUM_STAKEDAO_STRATEGIES];
+extern stakedaoCrvPool_t const CURVE_POOLS[NUM_CURVE_POOLS];
 
 // Shared global memory with Ethereum app. Must be at most 5 * 32 bytes.
 typedef struct stakedao_parameters_t {

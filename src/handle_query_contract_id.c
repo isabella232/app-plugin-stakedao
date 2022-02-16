@@ -48,6 +48,12 @@ void handle_query_contract_id(void *parameters) {
             strlcpy(msg->name, PLUGIN_NAME, msg->nameLength);
             strlcpy(msg->version, "Unstake", msg->versionLength);
             break;
+        case CURVE_ADD_L_2:
+        case CURVE_ADD_L_3:
+        case CURVE_ADD_L_3_UNDER:
+            strlcpy(msg->name, PLUGIN_NAME, msg->nameLength);
+            strlcpy(msg->version, "Add Liquidity", msg->versionLength);
+            break;
         default:
             PRINTF("Selector Index :%d not supported\n", context->selectorIndex);
             msg->result = ETH_PLUGIN_RESULT_ERROR;

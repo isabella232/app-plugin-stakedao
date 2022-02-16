@@ -143,6 +143,16 @@
                     "plugin": "StakeDAO"
 		        }
 	        }
+        },
+        {
+            "address": "0xbebc44782c7db0a1a60cb6fe97d0b483032ff1c7",
+            "contractName": "CrvUSDPool",
+            "selectors": {
+                "0x4515cef3": {
+                    "method": "add_liquidity",
+                    "plugin": "StakeDAO"
+		        }
+	        }
         }
     ],
     "name": "StakeDAO"

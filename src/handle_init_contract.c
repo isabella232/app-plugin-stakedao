@@ -72,6 +72,11 @@ void handle_init_contract(void *parameters) {
         case ANGLE_GET_REWARD:
             context->next_param = USER;
             break;
+        case CURVE_ADD_L_2:
+        case CURVE_ADD_L_3:
+        case CURVE_ADD_L_3_UNDER:
+            context->next_param = TOKEN_1;
+            break;
         default:
             PRINTF("Missing selectorIndex\n");
             msg->result = ETH_PLUGIN_RESULT_ERROR;

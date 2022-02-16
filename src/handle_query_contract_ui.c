@@ -184,6 +184,16 @@ void handle_query_contract_ui_vaults(ethQueryContractUI_t *msg, stakedao_paramet
             break;
         }
     }
+    uint8_t j;
+    stakedaoCrvPool_t *currentPool = NULL;
+    for (j = 0; j < NUM_CURVE_POOLS; j++) {
+        currentPool = (stakedaoCrvPool_t *) PIC(&CURVE_POOLS[i]);
+        if (memcmp(currentPool->address, context->address, ADDRESS_LENGTH) == 0) {
+            memcpy(context->want, currentPool->want, MAX_STRATEGY_TICKER_LEN);
+            memcpy(context->vault, currentPool->pool, MAX_STRATEGY_TICKER_LEN);
+            break;
+        }
+    }
     switch (msg->screenIndex) {
         case 0:
             switch (context->selectorIndex) {
