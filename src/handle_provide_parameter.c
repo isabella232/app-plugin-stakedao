@@ -176,6 +176,33 @@ static void handle_curve_add_l_3(ethPluginProvideParameter_t *msg, stakedao_para
     }
 }
 
+static void handle_curve_add_l_3_under(ethPluginProvideParameter_t *msg, stakedao_parameters_t *context) {
+    switch (context->next_param) {
+        case TOKEN_1:
+            copy_amount(context->amount, sizeof(context->amount), msg->parameter);
+            context->next_param = TOKEN_2;
+            break;
+        case TOKEN_2:
+            copy_amount(context->amount, sizeof(context->amount), msg->parameter);
+            context->next_param = TOKEN_3;
+            break;
+        case TOKEN_3:
+            copy_amount(context->min_amount, sizeof(context->min_amount), msg->parameter);
+            context->next_param = MIN_AMOUNT;
+            break;
+        case MIN_AMOUNT:
+            copy_pid(context->pid, sizeof(context->pid), msg->parameter);
+            context->next_param = UNDER;
+            break;
+        case UNDER:
+            break;
+        default:
+            PRINTF("Param not supported\n");
+            msg->result = ETH_PLUGIN_RESULT_ERROR;
+            break;
+    }
+}
+
 void handle_provide_parameter(void *parameters) {
     ethPluginProvideParameter_t *msg = (ethPluginProvideParameter_t *) parameters;
     stakedao_parameters_t *context = (stakedao_parameters_t *) msg->pluginContext;
@@ -230,8 +257,10 @@ void handle_provide_parameter(void *parameters) {
             handle_curve_add_l_2(msg, context);
             break;
         case CURVE_ADD_L_3:
-        case CURVE_ADD_L_3_UNDER:
             handle_curve_add_l_3(msg, context);
+            break;
+        case CURVE_ADD_L_3_UNDER:
+            handle_curve_add_l_3_under(msg, context);
             break;
         default:
             PRINTF("Selector Index %d not supported\n", context->selectorIndex);

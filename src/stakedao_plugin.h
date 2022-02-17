@@ -56,7 +56,8 @@ typedef enum {
     USER,
     TOKEN_1,
     TOKEN_2,
-    TOKEN_3
+    TOKEN_3,
+    UNDER
 } selectorField;
 
 extern const uint8_t *const STAKEDAO_SELECTORS[NUM_STAKEDAO_SELECTORS];
@@ -71,8 +72,8 @@ typedef struct stakedaoStrategy_t {
 
 typedef struct stakedaoCrvPool_t {
     uint8_t address[ADDRESS_LENGTH];
-    char want[MAX_STRATEGY_TICKER_LEN];
     char pool[MAX_STRATEGY_TICKER_LEN];
+    char want[MAX_STRATEGY_TICKER_LEN];
 } stakedaoCrvPool_t;
 
 extern stakedaoStrategy_t const STAKEDAO_STRATEGIES[NUM_STAKEDAO_STRATEGIES];

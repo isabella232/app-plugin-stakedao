@@ -46,6 +46,11 @@ static void set_angle_rewards_receive_name(ethQueryContractUI_t *msg) {
     strlcpy(msg->msg, "ANGLE", msg->msgLength);
 }
 
+static void set_curve_pool_name(ethQueryContractUI_t *msg, stakedao_parameters_t *context) {
+    strlcpy(msg->title, "Pool", msg->titleLength);
+    strlcpy(msg->msg, context->vault, msg->msgLength);
+}
+
 static void set_masterchef_name(ethQueryContractUI_t *msg, stakedao_parameters_t *context) {
     strlcpy(msg->title, "LP Farming PID", msg->titleLength);
 
@@ -77,6 +82,11 @@ static void set_want_name_sd_token(ethQueryContractUI_t *msg, stakedao_parameter
 static void set_nft_want_name(ethQueryContractUI_t *msg) {
     strlcpy(msg->title, "Want", msg->titleLength);
     strlcpy(msg->msg, "StakeDAO NFTs", msg->msgLength);
+}
+
+static void set_curve_pool_amount(ethQueryContractUI_t *msg) {
+    strlcpy(msg->title, "Amount", msg->titleLength);
+    strlcpy(msg->msg, "Selected", msg->msgLength);
 }
 
 static void set_amount_with_all(ethQueryContractUI_t *msg) {
@@ -187,7 +197,7 @@ void handle_query_contract_ui_vaults(ethQueryContractUI_t *msg, stakedao_paramet
     uint8_t j;
     stakedaoCrvPool_t *currentPool = NULL;
     for (j = 0; j < NUM_CURVE_POOLS; j++) {
-        currentPool = (stakedaoCrvPool_t *) PIC(&CURVE_POOLS[i]);
+        currentPool = (stakedaoCrvPool_t *) PIC(&CURVE_POOLS[j]);
         if (memcmp(currentPool->address, context->address, ADDRESS_LENGTH) == 0) {
             memcpy(context->want, currentPool->want, MAX_STRATEGY_TICKER_LEN);
             memcpy(context->vault, currentPool->pool, MAX_STRATEGY_TICKER_LEN);
@@ -208,6 +218,11 @@ void handle_query_contract_ui_vaults(ethQueryContractUI_t *msg, stakedao_paramet
                 case NFT_STAKE:
                 case NFT_UNSTAKE:
                     set_nft_boost_name(msg);
+                    break;
+                case CURVE_ADD_L_2:
+                case CURVE_ADD_L_3:
+                case CURVE_ADD_L_3_UNDER:
+                    set_curve_pool_name(msg, context);
                     break;
                 default:
                     set_strategy_name(msg, context);
@@ -282,6 +297,11 @@ void handle_query_contract_ui_vaults(ethQueryContractUI_t *msg, stakedao_paramet
                     break;
                 case NFT_UNSTAKE:
                     set_nft_amount(msg);
+                    break;
+                case CURVE_ADD_L_2:
+                case CURVE_ADD_L_3:
+                case CURVE_ADD_L_3_UNDER:
+                    set_curve_pool_amount(msg);
                     break;
                 default:
                     break;
